@@ -45,7 +45,8 @@ public class PhoneNumberControllerTest {
             .get("/allPhoneNumbers")
         .then()
             .log().all()
-            .body(not(Matchers.empty()));
+            .body(not(Matchers.empty()))
+            .body("responseStatusMessage", equalTo("All phone number details"));
     }
 
     @Test

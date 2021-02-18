@@ -12,7 +12,5 @@ public interface PhoneNumberRepository extends JpaRepository<PhoneNumber, Long> 
 
     List<PhoneNumber> findByCustId (String custId);
 
-    List<PhoneNumber> findAllBySimStatus (String simStatus);
-
     List<PhoneNumber> findByPhoneNumber (String phoneNumber);
 }

@@ -1,8 +1,17 @@
 package com.meena.server.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
 @Entity(name = "phone_numbers")
 public class PhoneNumber {
     private Long uniqueId;
@@ -19,37 +28,5 @@ public class PhoneNumber {
 
     public void setUniqueId(Long uniqueId) {
         this.uniqueId = uniqueId;
-    }
-
-    public String getCustId() {
-        return custId;
-    }
-
-    public void setCustId(String custId) {
-        this.custId = custId;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getSimStatus() {
-        return simStatus;
-    }
-
-    public void setSimStatus(String simStatus) {
-        this.simStatus = simStatus;
-    }
-
-    public LocalDateTime getSimActDate() {
-        return simActDate;
-    }
-
-    public void setSimActDate(LocalDateTime simActDate) {
-        this.simActDate = simActDate;
     }
 }

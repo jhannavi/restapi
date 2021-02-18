@@ -21,10 +21,13 @@ public class PhoneNumberService {
     Logger logger = LogManager.getLogger(PhoneNumberService.class);
 
     public PhoneNumberRetrieveResponse getAllPhoneNumbers() {
+
+        logger.info("Getting all phone number details");
         List<PhoneNumber> phoneNumbersList = phoneNumberRepository.findAll();
         PhoneNumberRetrieveResponse phoneNumberRetrieveResponse = new PhoneNumberRetrieveResponse();
         phoneNumberRetrieveResponse.setRequestType("All Phone Numbers");
         if (phoneNumbersList.isEmpty()) {
+            logger.debug("Phone number details are not available");
             phoneNumberRetrieveResponse.setResponseStatusMessage("Phone number details are not available");
         } else {
             phoneNumberRetrieveResponse.setPhoneNumberList(phoneNumbersList);
@@ -34,12 +37,14 @@ public class PhoneNumberService {
     }
 
     public PhoneNumberRetrieveResponse getPhoneNumberByCustomer(String custId) {
+        logger.info("Getting all phone number details for customer " + custId);
         List<PhoneNumber> phoneNumbersList = phoneNumberRepository.findByCustId(custId);
         PhoneNumberRetrieveResponse phoneNumberRetrieveResponse = new PhoneNumberRetrieveResponse();
         phoneNumberRetrieveResponse.setRequestType("Search by Customer Id");
         phoneNumberRetrieveResponse.setRequestCustomerId(custId);
 
         if (phoneNumbersList.isEmpty()) {
+            logger.debug("Phone numbers are not available for customer " + custId);
             phoneNumberRetrieveResponse.setResponseStatusMessage(CommonHelper.CUSTOMER_PHONENUMBER_NA);
         } else {
             phoneNumberRetrieveResponse.setPhoneNumberList(phoneNumbersList);
@@ -49,6 +54,7 @@ public class PhoneNumberService {
     }
 
     public PhoneNumberRetrieveResponse getPhoneNumberDetails(String phoneNumber) {
+        logger.info("Search by phone number " + phoneNumber);
         List<PhoneNumber> phoneNumbersList = phoneNumberRepository.findByPhoneNumber(phoneNumber);
         PhoneNumberRetrieveResponse phoneNumberRetrieveResponse = new PhoneNumberRetrieveResponse();
         phoneNumberRetrieveResponse.setRequestType("Search by Phone Number");
@@ -60,6 +66,7 @@ public class PhoneNumberService {
         }
 
         if (phoneNumbersList.isEmpty()) {
+            logger.debug("Phone number details not available for " + phoneNumber);
             phoneNumberRetrieveResponse.setResponseStatusMessage(CommonHelper.PHONENUMBER_NA);
         } else {
             phoneNumberRetrieveResponse.setPhoneNumberList(phoneNumbersList);
@@ -82,21 +89,14 @@ public class PhoneNumberService {
 
         List<PhoneNumber> requestedPhoneNumbers = phoneNumberRepository.findByPhoneNumber(phoneNumber);
         PhoneNumber phoneNumberToUpdate = new PhoneNumber();
-//        phoneNumberResponse.setPhoneNumber(phoneNumberRequest.getPhoneNumber());
         if(!requestedPhoneNumbers.isEmpty()) {
             logger.info("Given phone number is available");
-            System.out.println("---------------------------Inside data available :: " + requestedPhoneNumbers.size());
             String phoneSimStatus = requestedPhoneNumbers.get(0).getSimStatus();
             String phoneNumberRes = requestedPhoneNumbers.get(0).getPhoneNumber();
             String custIdRes = requestedPhoneNumbers.get(0).getCustId();
             Long uniqueIdRes = requestedPhoneNumbers.get(0).getUniqueId();
-            System.out.println("---------------------------Phone Number :: " + phoneNumberRes);
-            System.out.println("---------------------------Customer ID :: " + custIdRes);
-            System.out.println("---------------------------SIM Status :: " + phoneSimStatus);
-            System.out.println("---------------------------UNIQUE ID :: " + uniqueIdRes);
 
             if (phoneSimStatus.equalsIgnoreCase(SimStatusEnum.ACTIVATED.toString())) {
-//                phoneNumberResponse.setSimStatus(phoneSimStatus);
                 logger.debug("Given phone number is already in activated state, " + phoneSimStatus + " for " + phoneNumber);
                 phoneNumberResponse.setResponseStatusMessage(CommonHelper.ALREADY_ACTIVE);
                 return phoneNumberResponse;
@@ -107,14 +107,12 @@ public class PhoneNumberService {
                 phoneNumberToUpdate.setPhoneNumber(phoneNumberRes);
                 phoneNumberToUpdate.setUniqueId(uniqueIdRes);
                 phoneNumberToUpdate.setCustId(custIdRes);
-                System.out.println("-----------------------------------saving status to active");
                 phoneNumberRepository.save(phoneNumberToUpdate);
                 List<PhoneNumber> phoneNumberUpdated = phoneNumberRepository.findByPhoneNumber(phoneNumber);
                 phoneNumberResponse.setPhoneNumberList(phoneNumberUpdated);
                 phoneNumberResponse.setResponseStatusMessage(commonHelper.PHONENUMBER_ACTIVATED);
                 logger.debug("Phone number activation completed for " + phoneNumber);
             }
-
         } else {
             logger.debug("Phone number not available for " + phoneNumber);
             phoneNumberResponse.setResponseStatusMessage(CommonHelper.NUMBER_NA);
